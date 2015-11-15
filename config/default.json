@@ -1,0 +1,10 @@
+{
+  "logMode": "debug",
+  "transrecApi": {
+    "host": "api.transrec.net",
+    "path": "/v1",
+    "port": 443,
+    "SID": "ここにあなたのTRANSREC APIのSIDを入力",
+    "Token": "ここにあなたのTRANSREC APIのTokenを入力"
+  }
+}
