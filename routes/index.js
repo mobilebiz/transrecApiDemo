@@ -100,6 +100,47 @@ router.post('/ping', function(req, res, next) {
       });
     },
 
+    // Kintoneにデータを投げる
+    function(callback) {
+      var request = require('request');
+
+      var params = {
+        "app": 1,
+        "record": {
+          "calledDate": {
+            "value": _json.calledDate
+          },
+          "phoneNum": {
+            "value": _json.from
+          },
+          "message": {
+            "value": _json.message
+          }
+        }
+      };
+
+      var options = {
+        url: 'https://transrec.cyboze.com/k/v1/record.json',
+        headers: {  'Content-Type': 'application/json' },
+        json: true,
+        body: JSON.stringify(params)
+      };
+
+      request.post(options, function(err, response, body){
+        if (err) {
+          debug(err.message);
+          debug('error: '+ response.statusCode);
+          callback(err);
+        } else if (response.statusCode == 200) {
+          debug(body);
+          callback(null, 'Kintoneに書き出しました。');
+        } else {
+          debug('error: '+ response.statusCode);
+          callback(new Error('Kintoneへ書き出し中に、エラーが発生しました。'));
+        }
+      });
+    },
+
   ], function(err, results) {
     if (err) {
       debug('ERROR:'+err.message);
