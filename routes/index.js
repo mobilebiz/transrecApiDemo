@@ -123,7 +123,7 @@ router.post('/ping', function(req, res, next) {
         url: 'https://transrec.cybozu.com/k/v1/record.json',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization' : 'Basic ' + new Buffer(config.kintone.id + ':' + config.kintone.pass).toString('base64')
+          'X-Cybozu-API-Token' : 'CvVtdIKm8XtSWG3Gso2BS2fQTQIeIio6PRsRP8oY'
         },
         json: true,
         body: JSON.stringify(params)
