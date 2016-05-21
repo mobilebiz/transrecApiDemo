@@ -127,7 +127,7 @@ router.post('/ping', function(req, res, next) {
           'X-Cybozu-Authorization': new Buffer(config.kintone.id + ':' + config.kintone.pass).toString('base64')
         },
         json: true,
-        body: params
+        body: JSON.stringify(params)
       };
 
       request.post(options, function(err, response, body){
