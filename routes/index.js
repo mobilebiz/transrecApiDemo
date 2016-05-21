@@ -118,8 +118,9 @@ router.post('/ping', function(req, res, next) {
           }
         }
       };
+
       var options = {
-        url: 'https://transrec.cyboze.com/k/v1/record.json',
+        url: 'https://transrec.cybozu.com/k/v1/record.json',
         headers: {
           'Content-Type': 'application/json',
           'Authorization' : 'Basic ' + new Buffer(config.kintone.id + ':' + config.kintone.pass).toString('base64')
