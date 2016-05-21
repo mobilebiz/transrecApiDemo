@@ -140,6 +140,7 @@ router.post('/ping', function(req, res, next) {
           callback(null, 'Kintoneに書き出しました。');
         } else {
           debug('error: '+ response.statusCode);
+          debug(body.errors);
           debug(body.errors.app.messages);
           callback(new Error('Kintoneへ書き出し中に、エラーが発生しました。'));
         }
