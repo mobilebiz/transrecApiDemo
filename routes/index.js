@@ -108,7 +108,7 @@ router.post('/ping', function(req, res, next) {
         "app": 1,
         "record": {
           "calledDate": {
-            "value": _json.calledDate
+            "value": moment(_json.calledDate).utc().format()
           },
           "phoneNum": {
             "value": _json.from
