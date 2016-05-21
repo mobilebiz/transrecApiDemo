@@ -5,6 +5,8 @@ var config = require('config')
   , Log = require('log')
   , log = new Log(config.logMode)
   , moment = require('moment')
+  , PDFDocument = require('pdfkit')
+  , fs = require('fs')
 ;
 
 /* GET home page. */
@@ -45,6 +47,14 @@ router.post('/ping', function(req, res, next) {
         response.on('end', function() {
           _json = JSON.parse(body);
           if (_json.status === 200) {
+            // PDFを作成
+            var doc = new PDFDocument();
+            var filename = moment().format('YYYYMMDDHHmmss')+'.pdf';
+            doc.pipe(fs.createWriteStream(__dirname+'/../public/pdf/'+filename));
+            doc.font(__dirname+'/../fonts/GenJyuuGothic-Bold.ttf');
+            doc.fontSize(30);
+            doc.text(_json.message);
+            doc.end();
             callback(null, 'Successful in obtaining the text data.');
           } else {
             callback(new Error('TRANSREC API /record Error. Status code was '+_json.status+'.'));
@@ -73,7 +83,6 @@ router.post('/ping', function(req, res, next) {
         });
 
         response.on('end', function() {
-          var fs = require('fs');
     			var filename = moment().format('YYYYMMDDHHmmss')+'.mp3';
     			_url = 'http://'+req.headers.host+'/mp3/'+filename;
     			fs.writeFile(__dirname+'/../public/mp3/'+filename, buf, 'binary', function (err) {
