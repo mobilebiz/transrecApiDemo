@@ -28,3 +28,10 @@ node_modules
 
 # Debug log from npm
 npm-debug.log
+
+# public temporary folder
+public/mp3
+public/pdf
+
+# font folder
+fonts
