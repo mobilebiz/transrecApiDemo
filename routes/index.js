@@ -118,6 +118,8 @@ router.post('/ping', function(req, res, next) {
           }
         }
       };
+      debug('params:'+params);
+      debug('JSON:'+JSON.stringify(params));
 
       var options = {
         url: 'https://transrec.cybozu.com/k/v1/record.json',
