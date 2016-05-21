@@ -12,6 +12,7 @@ var config = require('config')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  debug('/ called.');
   res.render('index', { title: 'TRANSREC RESTful API Demo page.' });
 });
 
