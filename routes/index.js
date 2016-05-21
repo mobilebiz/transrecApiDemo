@@ -100,6 +100,43 @@ router.post('/ping', function(req, res, next) {
       });
     },
 
+    // Kintoneからデータを取得する
+    function(callback) {
+      var request = require('request');
+
+      var params = {
+        "app": 1,
+        "id": 2
+      };
+      debug('JSON:'+JSON.stringify(params));
+
+      var options = {
+        url: 'https://transrec.cybozu.com/k/v1/record.json',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Cybozu-Authorization': new Buffer(config.kintone.id + ':' + config.kintone.pass).toString('base64')
+        },
+        json: true,
+        body: JSON.stringify(params)
+      };
+
+      request.get(options, function(err, response, body){
+        if (err) {
+          debug(err.message);
+          debug('error: '+ response.statusCode);
+          callback(err);
+        } else if (response.statusCode == 200) {
+          debug(body);
+          callback(null, 'Kintoneから読み出しました。');
+        } else {
+          debug('error: '+ response.statusCode);
+          debug(body);
+          debug(body.errors.app.messages);
+          callback(new Error('Kintoneから読み出し中に、エラーが発生しました。'));
+        }
+      });
+    },
+
     // Kintoneにデータを投げる
     function(callback) {
       var request = require('request');
