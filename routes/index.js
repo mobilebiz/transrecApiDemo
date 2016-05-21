@@ -108,7 +108,7 @@ router.post('/ping', function(req, res, next) {
         "app": 1,
         "id": 2
       };
-      debug('JSON:'+JSON.stringify(params));
+      debug('JSON:'+JSON.parse(params));
 
       var options = {
         url: 'https://transrec.cybozu.com/k/v1/record.json',
@@ -117,7 +117,7 @@ router.post('/ping', function(req, res, next) {
           'X-Cybozu-Authorization': new Buffer(config.kintone.id + ':' + config.kintone.pass).toString('base64')
         },
         json: true,
-        body: JSON.stringify(params)
+        body: JSON.parse(params)
       };
 
       request.get(options, function(err, response, body){
@@ -131,7 +131,6 @@ router.post('/ping', function(req, res, next) {
         } else {
           debug('error: '+ response.statusCode);
           debug(body);
-          debug(body.errors.app.messages);
           callback(new Error('Kintoneから読み出し中に、エラーが発生しました。'));
         }
       });
