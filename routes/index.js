@@ -7,6 +7,7 @@ var config = require('config')
   , moment = require('moment')
   , PDFDocument = require('pdfkit')
   , fs = require('fs')
+  , debug = require('debug')('transrecApiDemo:index.js')
 ;
 
 /* GET home page. */
@@ -16,7 +17,7 @@ router.get('/', function(req, res, next) {
 
 /* POST ping */
 router.post('/ping', function(req, res, next) {
-  log.debug('/ping called.');
+  debug('/ping called.');
 
   // Check Parameters
   var _recordId = req.body.recordid || '';
@@ -100,10 +101,11 @@ router.post('/ping', function(req, res, next) {
 
   ], function(err, results) {
     if (err) {
+      debug('ERROR:'+err.message);
       next(err);
     } else {
-      log.debug(results);
-      log.info(_json);
+      debug(results);
+      debug(_json);
       res.sendStatus(200);
     }
   });
