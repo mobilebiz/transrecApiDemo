@@ -108,7 +108,7 @@ router.post('/ping', function(req, res, next) {
         "app": 1,
         "id": 2
       };
-      debug('JSON:'+JSON.parse(params));
+      debug('JSON:'+JSON.stringify(params));
 
       var options = {
         url: 'https://transrec.cybozu.com/k/v1/record.json',
@@ -117,7 +117,7 @@ router.post('/ping', function(req, res, next) {
           'X-Cybozu-Authorization': new Buffer(config.kintone.id + ':' + config.kintone.pass).toString('base64')
         },
         json: true,
-        body: JSON.parse(params)
+        body: params
       };
 
       request.get(options, function(err, response, body){
