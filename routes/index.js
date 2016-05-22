@@ -163,7 +163,7 @@ router.post('/ping', function(req, res, next) {
           'X-Cybozu-Authorization': new Buffer(config.kintone.id + ':' + config.kintone.pass).toString('base64')
         },
         json: true,
-        body: JSON.stringify(params)
+        body: params
       };
 
       request.post(options, function(err, response, body){
