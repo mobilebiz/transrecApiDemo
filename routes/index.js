@@ -5,9 +5,8 @@ var config = require('config')
   , Log = require('log')
   , log = new Log(config.logMode)
   , moment = require('moment')
-  , PDFDocument = require('pdfkit')
   , fs = require('fs')
-  , debug = require('debug')('transrecApiDemo:index.js')
+  , debug = require('debug')('index.js')
 ;
 
 /* GET home page. */
@@ -50,14 +49,6 @@ router.post('/ping', function(req, res, next) {
         response.on('end', function() {
           _json = JSON.parse(body);
           if (_json.status === 200) {
-            // PDFを作成
-            var doc = new PDFDocument();
-            var filename = moment().format('YYYYMMDDHHmmss')+'.pdf';
-            doc.pipe(fs.createWriteStream(__dirname+'/../public/pdf/'+filename));
-            doc.font(__dirname+'/../fonts/GenJyuuGothic-Bold.ttf');
-            doc.fontSize(30);
-            doc.text(_json.message);
-            doc.end();
             callback(null, 'Successful in obtaining the text data.');
           } else {
             callback(new Error('TRANSREC API /record Error. Status code was '+_json.status+'.'));
@@ -101,63 +92,16 @@ router.post('/ping', function(req, res, next) {
       });
     },
 
-/*
-    // Kintoneからデータを取得する
+    // Kintoneにデータを保存する
     function(callback) {
       var request = require('request');
-
-      var params = {
-        "app": 1,
-        "id": 2
-      };
-      debug('JSON:'+JSON.stringify(params));
-
-      var options = {
-        url: 'https://transrec.cybozu.com/k/v1/record.json',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Cybozu-Authorization': new Buffer(config.kintone.id + ':' + config.kintone.pass).toString('base64')
-        },
-        json: true,
-        body: params
-      };
-
-      request.get(options, function(err, response, body){
-        if (err) {
-          debug(err.message);
-          debug('error: '+ response.statusCode);
-          callback(err);
-        } else if (response.statusCode == 200) {
-          debug(body);
-          callback(null, 'Kintoneから読み出しました。');
-        } else {
-          debug('error: '+ response.statusCode);
-          debug(body);
-          callback(new Error('Kintoneから読み出し中に、エラーが発生しました。'));
-        }
-      });
-    },
-*/
-
-    // Kintoneにデータを投げる
-    function(callback) {
-      var request = require('request');
-
       var params = {
         "app": 1,
         "record": {
-          "calledDate": {
-            "value": moment(_json.calledDate, "YYYY/MM/DD HH:mm:ss").utc().format()
-          },
-          "phoneNum": {
-            "value": _json.from
-          },
-          "message": {
-            "value": _json.message
-          },
-          "mp3": {
-            "value": _url
-          }
+          "calledDate": { "value": moment(_json.calledDate, "YYYY/MM/DD HH:mm:ss").utc().format() },
+          "phoneNum": { "value": _json.from },
+          "message": { "value": _json.message },
+          "mp3": { "value": _url }
         }
       };
       debug('JSON:'+JSON.stringify(params));
@@ -174,16 +118,12 @@ router.post('/ping', function(req, res, next) {
 
       request.post(options, function(err, response, body){
         if (err) {
-          debug(err.message);
-          debug('error: '+ response.statusCode);
+          debug(response.statusCode + ':' + err.message);
           callback(err);
         } else if (response.statusCode == 200) {
-          debug(body);
-          callback(null, 'Kintoneに書き出しました。');
+          callback(null, 'Kintoneに書き出しました。'+body);
         } else {
-          debug('error: '+ response.statusCode);
-          debug(body);
-          debug(body.errors.app.messages);
+          debug(response.statusCode + ':' + body);
           callback(new Error('Kintoneへ書き出し中に、エラーが発生しました。'));
         }
       });
@@ -191,11 +131,9 @@ router.post('/ping', function(req, res, next) {
 
   ], function(err, results) {
     if (err) {
-      debug('ERROR:'+err.message);
       next(err);
     } else {
       debug(results);
-      debug(_json);
       res.sendStatus(200);
     }
   });
