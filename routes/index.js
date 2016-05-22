@@ -27,6 +27,7 @@ router.post('/ping', function(req, res, next) {
   }
 
   var _json = null;
+  var _url = null;
   var async = require('async');
   async.series([
     // テキストデータを取得する
@@ -100,6 +101,7 @@ router.post('/ping', function(req, res, next) {
       });
     },
 
+/*
     // Kintoneからデータを取得する
     function(callback) {
       var request = require('request');
@@ -135,6 +137,7 @@ router.post('/ping', function(req, res, next) {
         }
       });
     },
+*/
 
     // Kintoneにデータを投げる
     function(callback) {
@@ -151,6 +154,9 @@ router.post('/ping', function(req, res, next) {
           },
           "message": {
             "value": _json.message
+          },
+          "mp3": {
+            "value": _url
           }
         }
       };
